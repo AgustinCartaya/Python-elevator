@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>main.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>main.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Project 1: Elevator 
+Elevators allow you to travel through different levels of a building in an easier, more comfortable and faster way. They are sometimes called classic elevators, building elevators, passenger elevators or building elevators. The minimum elevator size is approximately 700 x 1,300 (W x D) millimeters versus a standard elevator size of 1,100 x 1,400 (W x D) millimeters. The elevator speed varies between 25 and 250 centimeters per second, although high performance devices can reach 70 kilometers per hour. An elevator is made up of several parts including: </p>
+<p>A cabin:
+Also called a cage, it represents the compartment that carries the passenger through the floors of a building when the elevator is moving. It consists of walls, either steel or glass, supported by a robust metal structure.  </p>
+<p>Landing gates:
+They are the device intended to isolate the car to better protect the passengers during the transport. They close and open together with the cabin doors thanks to an automatic synchronization mechanism, known as a retractable saber. Between the two doors, the control always comes from the cab doors. In other words, the landing doors are only unlocked by the cab doors, which are activated by their own motor. Closing the doors is done by a counterweight. </p>
+<p>A control panel:
+It allows you to call or direct the car. To do this, it has several buttons: call buttons, on each level of the building, and floor buttons, in the car itself. Its role is to transmit your requests directly to the control cabinet, the electronic brain of your elevator. If elevator companies can propose a wide range of elevators, the layout of the control panels must always be done according to the NF EN 81-70 standard. Thus, each inscription of the buttons must be in relief and the remote alarm button must be easily identifiable to warn the helpers in case of emergency. </p>
+<p>A control box:
+It receives all the information from the control panel and the various sensors installed on your elevator before transmitting the orders to the machinery. When the car arrives for example near the first floor, it is this cabinet that orders the motor to slow down before stopping. It is also mounted in series with the landing doors and the on-board safety systems: if one element fails, the whole mechanism goes into emergency stop, which prevents any anomaly. </p>
+<p>The goal of this project is to program (simulate) the operation of an elevator (n floors) in Python. </p>
+<p>The functioning of an elevator is described as follows:</p>
+<ol>
+<li>
+<p>User:
+• The user arrives in front of the elevator, moves forward and presses the button
+• The elevator opens and the user gets on the elevator
+• The user presses the number of the floor he/she is going down to
+• The elevator closes and performs the trip
+• During this moment another user could ask for the elevator</p>
+</li>
+<li>
+<p>Elevator:
+• As long as it is not called anywhere, the elevator remains stationary;
+• When called, the elevator starts moving, to move to the floor (landing) where it
+is requested;
+• When it moves, it can be called to another floor, or it can be asked to go to a
+given floor (case of the passenger who enters in the elevator) ;
+• The movement of the elevator obeys a particular policy, to avoid the
+phenomenon of &ldquo;starvation&rdquo;: as long as it has to go (called or sent) higher, it goes up (and
+respectively). It goes down only when it does not need to go up anymore. This is why there
+are buttons on the landings to go up and down.</p>
+</li>
+</ol>
+<p>This project consists in writing a program in python that will simulate the operation of an
+elevator that will serve at least 8 floors(level). The maximum number of passengers that
+the elevator can take is 8, with a total weight of 1600kg.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Necessary imports for randomize the activity.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Import of classes created for every aspect of the simulation and GUI.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">window</span> <span class="kn">import</span> <span class="n">Window</span>
+<span class="kn">from</span> <span class="nn">elevator</span> <span class="kn">import</span> <span class="n">Elevator</span>
+<span class="kn">from</span> <span class="nn">floor</span> <span class="kn">import</span> <span class="n">Floor</span>
+<span class="kn">from</span> <span class="nn">building</span> <span class="kn">import</span> <span class="n">Building</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">screen_info</span> <span class="kn">import</span> <span class="n">ScreenInfo</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Maximum number of calls.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">nb_calls</span> <span class="o">=</span> <span class="mi">10000</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Time of execution.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">acceleration</span> <span class="o">=</span> <span class="mf">0.00001</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">GUI_th</span><span class="p">(</span><span class="n">window</span><span class="p">):</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Used to randomize the calls from the floors.
+A second thread is used for this loop.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">calls</span><span class="p">(</span><span class="n">floors</span><span class="p">,</span> <span class="n">elevator</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>loop nb_calls times</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_calls</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>A floor is chosen ramdomly.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">floor_nb</span> <span class="o">=</span>  <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>If the floor does not have people queuing, new people is created .</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">floors</span><span class="p">[</span><span class="n">floor_nb</span><span class="p">]</span><span class="o">.</span><span class="n">has_people</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>If new people is created the elevator is called.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">floors</span><span class="p">[</span><span class="n">floor_nb</span><span class="p">]</span><span class="o">.</span><span class="n">create_people</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Use to wait at the beginning.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="n">acceleration</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">floors</span><span class="p">[</span><span class="n">floor_nb</span><span class="p">]</span><span class="o">.</span><span class="n">has_people</span><span class="p">():</span>
+                <span class="n">floors</span><span class="p">[</span><span class="n">floor_nb</span><span class="p">]</span><span class="o">.</span><span class="n">call_elevator</span><span class="p">(</span><span class="n">elevator</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Wait between calls.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">acceleration</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>If the window is closed, this thread dies</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">elevator</span><span class="o">.</span><span class="n">is_working</span><span class="p">:</span>
+            <span class="k">break</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>controlled calls (floor class should be modified)
+def calls(floors, elevator):
+    for floor in floors:
+        if len(floor.people) &gt; 0:
+            elevator.external_request(floor.number)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Creating window.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">window</span> <span class="o">=</span> <span class="n">Window</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Creating background (building).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">building</span> <span class="o">=</span> <span class="n">Building</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">add_object</span><span class="p">(</span><span class="n">building</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Creating floors.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">floors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+        <span class="n">floors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Floor</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="n">floors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">acceleration</span><span class="p">(</span><span class="n">acceleration</span><span class="p">)</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">add_object</span><span class="p">(</span><span class="n">floors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Create screen info.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">screen_info</span> <span class="o">=</span> <span class="n">ScreenInfo</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">add_object</span><span class="p">(</span><span class="n">screen_info</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Create elevator</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">elevator</span> <span class="o">=</span> <span class="n">Elevator</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">floors</span><span class="p">,</span> <span class="n">screen_info</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">elevator</span><span class="o">.</span><span class="n">acceleration</span><span class="p">(</span><span class="n">acceleration</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">add_object</span><span class="p">(</span><span class="n">elevator</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Creating thread for the calling on the floors.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">calling_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">calls</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">floors</span><span class="p">,</span><span class="n">elevator</span><span class="p">))</span>
+    <span class="n">calling_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>The thread for the GUI is the principal thread.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">GUI_th</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">elevator</span><span class="o">.</span><span class="n">is_working</span> <span class="o">=</span> <span class="kc">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Here you can find details from the rest of the classes:</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p><a href="./person.html">For <code>person.py</code>, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p><a href="./people_group.html">For <code>people_group.py</code>, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p><a href="./elevator.html">For <code>elevator.py</code>, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p><a href="./floor.html">For <code>floor.py</code>.py, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p><a href="./building.html">For <code>building.py</code>, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p><a href="./screen_info.html">For <code>screen_info.py</code>, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p><a href="./window.html">For <code>window.py</code>, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>for a detalied look at the <a href="https://github.com/AgustinCartaya/Python-elevator">Repo, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
