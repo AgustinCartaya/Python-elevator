@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>elevator.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>elevator.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pygame</span> 
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">people_group</span> <span class="kn">import</span> <span class="n">PeopleGroup</span>
+<span class="kn">import</span> <span class="nn">threading</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h3><span id="class-that-models-a-group-of-people-from-the-class-<code>people_group.py</code>-and-contains-the-neccesary-functions-to-desing-and-control-the-the-elevator" href="class-that-models-a-group-of-people-from-the-class-<code>people_group.py</code>-and-contains-the-neccesary-functions-to-desing-and-control-the-the-elevator"> Class that models a group of people from the class <code>people_group.py</code> and contains the neccesary functions to desing and control the the elevator</span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p><a href="./people_group.html">For people_group.py class documentation, click here</a>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Elevator</span><span class="p">:</span>
+    <span class="n">lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Time (in seconds) to travel from a floor to another.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">TIME_MOVING</span> <span class="o">=</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Time (in seconds) to stay on a floor with the door opened.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">TIME_OPEN</span> <span class="o">=</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Maximum supported charge of the elevator, in kilograms. According to the constraints of the project.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">MAX_CHARGE</span> <span class="o">=</span> <span class="mi">1600</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Maxinum number of people supported inside the elevator according to the project constraints.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">MAX_PEOPLE</span> <span class="o">=</span> <span class="mi">8</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Image assets of the elevator in the GUI.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">IMG_EMPTY</span> <span class="o">=</span> <span class="s2">&quot;IMG_EMPTY&quot;</span>
+    <span class="n">IMG_FULL</span> <span class="o">=</span> <span class="s2">&quot;IMG_FULL&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Possible States of the elevator:</p>
+<p>-STATE_OPEN: Elevator is charging/discharging in a floor. Doors Open.</p>
+<p>-STATE_MOVING : Elevator is moving.</p>
+<p>-STATE_WATING: Elevator is waiting for a call.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">STATE_MOVING</span> <span class="o">=</span> <span class="s2">&quot;MOVING&quot;</span>
+    <span class="n">STATE_OPEN</span> <span class="o">=</span> <span class="s2">&quot;OPEN&quot;</span>
+    <span class="n">STATE_WATING</span> <span class="o">=</span> <span class="s2">&quot;CLOSE&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Distance in Pixels that the elevator moves in order to go from one floor to another.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">DISTANCE_FLOOR</span> <span class="o">=</span> <span class="mf">94.0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">floors</span><span class="p">,</span> <span class="n">screen_info</span><span class="p">,</span> <span class="n">current_floor</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Initialization of all parameters of a floor.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span> <span class="o">=</span> <span class="n">current_floor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">floors</span> <span class="o">=</span> <span class="n">floors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">requested_floor</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Initialization of the state of the elevator.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE_WATING</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_counter</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Initialization of elevator image asset.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">current_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IMG_EMPTY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_elevator</span> <span class="o">=</span> <span class="p">{}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Initialization of people group and queue of calls.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">people</span> <span class="o">=</span> <span class="n">PeopleGroup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entered_people</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit_people</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Initial Position.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">pos_y</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">DISTANCE_FLOOR</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos_x</span> <span class="o">=</span> <span class="mi">300</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moving_counter</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Initialization of the screen information.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">screen_info</span> <span class="o">=</span> <span class="n">screen_info</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Flag used to stop the application.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">is_working</span> <span class="o">=</span> <span class="kc">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>If this parameter is true, the elevator will print in the terminal all the steps.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">talkative</span> <span class="o">=</span> <span class="kc">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Emergency call.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">emergency</span> <span class="o">=</span> <span class="kc">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>This charges elevator.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">init_img_elevator</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Method to obtain external calls from the floors</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">external_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">floor_number</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;floor called </span><span class="si">%d</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="n">floor_number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__request</span><span class="p">(</span><span class="n">floor_number</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Method to obtain internal calls from the inside of the elevator, either a floor from the control pannel, either an Emergency call.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">internal_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">floor_number</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">floor_number</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;EMERGENCy CALLED !!!!!!!!!!!&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emergency</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;internal call </span><span class="si">%d</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="n">floor_number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__request</span><span class="p">(</span><span class="n">floor_number</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <h3><span id="queue-calls" href="queue-calls"> Queue calls </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>This function can be accessed by two threads: the elevator_th in the main thread and floors_th.
+However, in order to avoid concurrence, it is accessible by only one thread at a time.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">floor_number</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">floor_number</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <h3><span id="function-to-change-the-state-of-the-elevator." href="function-to-change-the-state-of-the-elevator."> Function to change the state of the elevator. </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Action timing will depend on the state. E.g.: if it is opened
+then uses the TIME.OPEN, if it is moving, then TIME.MOVING</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">change_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;Stated changed: </span><span class="si">%s</span><span class="s2"> ---&gt; </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_state</span><span class="p">,</span> <span class="n">state</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE_OPEN</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open_counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TIME_OPEN</span>
+        <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE_MOVING</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moving_counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TIME_MOVING</span>
+
+        <span class="k">if</span> <span class="n">state</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TIME_MOVING</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">requested_floor</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <h3><span id="core-function-of-the-elevator-operation." href="core-function-of-the-elevator-operation."> Core function of the elevator operation. </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>Control the states of each step of the operation and respond to the calls amde from external or internal input.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>First, check if the elevator is open to decrease the opening time.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE_OPEN</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open_counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_counter</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">FPS</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_counter</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">change_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STATE_WATING</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">change_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STATE_MOVING</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">floors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">]</span><span class="o">.</span><span class="n">close_door</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>Check if the elevator is waiting and the queue is not empty, so it can respond to the first call.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE_WATING</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span> <span class="c1">#</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">requested_floor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span> <span class="c1">#</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(1) call receaved from floor : </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">requested_floor</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">requested_floor</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(1.1) called from the same floor, opening the door&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">open_door</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_direction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requested_floor</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">change_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STATE_MOVING</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>Check if the elevator reach a requested floor while is moving.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE_MOVING</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>Activity of the elevator on a floor.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span>  <span class="bp">self</span><span class="o">.</span><span class="n">moving_counter</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">moving_counter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(2) arrived to floor : </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">)</span>                    
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">requested_floor</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">open_door</span><span class="p">()</span>                        
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">change_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STATE_MOVING</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">moving_counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">moving_counter</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">FPS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <h3><span id="up-or-down." href="up-or-down.">Up or down.</span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Return the direction of the elevator. Ascending or Descending.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">requested_floor</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span> <span class="o">-</span> <span class="n">requested_floor</span>
+        <span class="k">if</span> <span class="n">res</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <h3><span id="weight-restrictions:" href="weight-restrictions:"> Weight Restrictions: </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>return true if the elevator cannot take more people</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">is_full</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_weight</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">people</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_PEOPLE</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">people</span><span class="o">.</span><span class="n">get_weight</span><span class="p">()</span><span class="o">+</span><span class="n">p_weight</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_CHARGE</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <h3><span id="operations-in-a-floor:" href="operations-in-a-floor:"> Operations in a floor: </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>Set of necessary actions when the elevator reaches a floor.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p>Opens the door.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">open_door</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">STATE_OPEN</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(3) opening the door on floor </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>Removing people going out first, as a rule of thumb.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">people_going_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">people</span><span class="o">.</span><span class="n">get_exit_floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">people</span><span class="o">.</span><span class="n">remove_sub_group</span><span class="p">(</span><span class="n">people_going_out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit_people</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exit_people</span> <span class="o">+</span> <span class="n">people_going_out</span><span class="o">.</span><span class="n">get_nb</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">)</span><span class="o">.</span><span class="fm">__ne__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(4) Nb people went out </span><span class="si">%d</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="n">people_going_out</span><span class="o">.</span><span class="n">get_nb</span><span class="p">())</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>Then, obtaining the people that is entering just if it is possible to allow more people inside due to the constraints: Weight and Number of people in the cabin.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_full</span><span class="p">():</span>
+            <span class="n">new_people</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">floors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">]</span><span class="o">.</span><span class="n">open_door</span><span class="p">(</span><span class="n">people_going_out</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>Internal command.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">nb_people_entered</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">new_people</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <p>if p.exit_floor != self.current_floor:</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_full</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">weight</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">people</span><span class="o">.</span><span class="n">add_person</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                    <span class="n">nb_people_entered</span> <span class="o">=</span> <span class="n">nb_people_entered</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">internal_request</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">exit_floor</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">floors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">]</span><span class="o">.</span><span class="n">over_weight</span><span class="p">(</span><span class="n">new_people</span><span class="o">.</span><span class="n">get_last</span><span class="p">(</span><span class="n">nb_people_entered</span><span class="p">))</span>
+                    <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">entered_people</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entered_people</span> <span class="o">+</span> <span class="n">nb_people_entered</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(5) Nb people entered </span><span class="si">%d</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="n">nb_people_entered</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <p>The elevator should be called again for the people that could not enter</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="n">nb_people_entered</span> <span class="o">&lt;</span>  <span class="nb">len</span><span class="p">(</span><span class="n">new_people</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(5.1) Nb people entered not entered </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nb_people_entered</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_people</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">floors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">]</span><span class="o">.</span><span class="n">call_elevator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <p>Call gets queued when not everybody could enter the cabin.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(5) Cannot take more people, queued call&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">floors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">]</span><span class="o">.</span><span class="n">call_elevator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">talk</span><span class="p">(</span><span class="s2">&quot;(6) People in the elevator </span><span class="si">%d</span><span class="s2">, current floor: </span><span class="si">%d</span><span class="s2"> </span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">people</span><span class="o">.</span><span class="n">get_nb</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>Initializing the images of the elevator.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">init_img_elevator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <p>Empty elevator assets.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">img_empty</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span><span class="s1">&#39;img&#39;</span><span class="p">,</span> <span class="s1">&#39;elevator_empty.png&#39;</span><span class="p">))</span>
+        <span class="n">img_empty</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">smoothscale</span><span class="p">(</span><span class="n">img_empty</span><span class="p">,(</span><span class="mi">55</span><span class="p">,</span> <span class="mi">95</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>Full elevator assets.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">img_full</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">,</span><span class="s1">&#39;img&#39;</span><span class="p">,</span> <span class="s1">&#39;elevator_full.png&#39;</span><span class="p">))</span>
+        <span class="n">img_full</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">smoothscale</span><span class="p">(</span><span class="n">img_full</span><span class="p">,(</span><span class="mi">55</span><span class="p">,</span> <span class="mi">95</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_elevator</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">IMG_EMPTY</span> <span class="p">:</span> <span class="n">img_empty</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">IMG_FULL</span><span class="p">:</span> <span class="n">img_full</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <p>Calculate the position of the elevator.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calc_y_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">moving_counter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pos_y</span> <span class="o">=</span> <span class="mi">22</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">DISTANCE_FLOOR</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">moving_counter</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">TIME_MOVING</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">DISTANCE_FLOOR</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>Draw the elevator on the screen</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">emergency</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serve</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calc_y_pos</span><span class="p">()</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">people</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_elevator</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">IMG_FULL</span><span class="p">],</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_y</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_elevator</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">IMG_EMPTY</span><span class="p">],</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos_y</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <p>Refreshing information for the most up to date info about the state of the system.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">screen_info</span><span class="o">.</span><span class="n">refresh</span><span class="p">({</span><span class="s2">&quot;queue&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">,</span>
+                        <span class="s2">&quot;current_floor&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">current_floor</span><span class="p">,</span>
+                        <span class="s2">&quot;requested_floor&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">requested_floor</span><span class="p">,</span>
+                        <span class="s2">&quot;people&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">people</span><span class="p">,</span>
+                        <span class="s2">&quot;moving&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span>
+                        <span class="s2">&quot;current_state&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span><span class="p">,</span>
+                        <span class="s2">&quot;emergency&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">emergency</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Used to print on the terminal each of the actions of the elevator.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">talk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">important</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">talkative</span> <span class="ow">or</span> <span class="n">important</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elevator: &quot;</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">acceleration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mult</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TIME_MOVING</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TIME_MOVING</span> <span class="o">*</span> <span class="n">mult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TIME_OPEN</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TIME_OPEN</span> <span class="o">*</span> <span class="n">mult</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p><a href="./main.html">Go back to main.py, click here</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
