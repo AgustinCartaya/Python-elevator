@@ -8,25 +8,23 @@ from pygame.locals import (
     QUIT,
 )
 
-# class that creates the screen and call the draw method
-# of all the elements
+# === class that creates the screen and call the draw method of all the elements ====
 class Window:
     SCREEN_WIDTH = 600
     SCREEN_HEIGHT = 800
     FPS = 30
 
     def __init__(self):
-        # Initialize pygame
+        # Initialize pygame.
         pygame.init()
 
-        # Font initialization
+        # Font initialization.
         font = pygame.font.SysFont('Arial', 40)
 
-        # Create the screen object
-        # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+        # Create the screen object: The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
 
-        # clock
+        # Clock
         self.fpsClock = pygame.time.Clock()
 
         self.objects = [[0] for _ in range(11)]
@@ -45,11 +43,11 @@ class Window:
 
     def draw(self):
         while self.running:
-            # for loop through the event queue
+            # For loop through the event queue.
             for event in pygame.event.get():
-                # Check for KEYDOWN event
+                # Check for KEYDOWN event.
                 if event.type == KEYDOWN:
-                    # If the Esc key is pressed, then exit the main loop
+                    # If the Esc key is pressed, then exit the main loop.
                     if event.key == K_ESCAPE:
                         self.running = False
                 # Check for QUIT event. If QUIT, then set running to false.
@@ -58,19 +56,21 @@ class Window:
 
             self.screen.fill((255,255,255))
 
-            # drawing all layers
+            # Drawing all layers
             for layer in self.objects:
                 for object in layer:
-                    # if layer is not empty
+                    # If layer is not empty.
                     if object != 0:
-                        #drawing object
+                        #Drawing object
                         object.draw()
 
             # Update the display
-            # pygame.display.flip()   
+            # Pygame.display.flip()   
             pygame.display.update()   
         
             self.fpsClock.tick(self.FPS)
+
+# [Go back to main.py, click here](./main.html)
 
 
 

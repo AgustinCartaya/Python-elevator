@@ -2,7 +2,8 @@ import pygame
 import os
 from elevator import Elevator
 
-# class used to show the information of the elevator TO IMPROVE
+# === Class used to monitor the current status of the elevator. ===
+
 class ScreenInfo:
     def __init__(self, window):
         self.window = window
@@ -19,30 +20,31 @@ class ScreenInfo:
         self.load_images()
 
     def refresh(self, info):
-        # refreshing current floor
+        # Refreshing information of the current floor
         self.current_floor = info["current_floor"]
         self.requested_floor = info["requested_floor"]
 
-        # refreshing selected buttons
+        # Refreshing state of the selected buttons
         selected_buttons = list(set(info["queue"]))
         self.selected_buttons = [0 for _ in range(8)]
         for i in selected_buttons:
             self.selected_buttons[i] = 1
         self.selected_buttons[self.requested_floor] = 1
 
-        # refreshing number of people
+        # Refreshing the number of people
         self.people_number = len(info["people"])
 
-        # refreshing weight
+        # Refreshing the actual weight in the elevator.
         self.people_weight = info["people"].get_weight()
 
-        # refreshing state and movement
+        # Refreshing state of the doors and direction of movement.
         self.current_state = info["current_state"]
         self.moving = info["moving"]
 
         self.emergency = info["emergency"]
 
     def load_images(self):
+        #Loading of the necessary assets for the GUI.
         self.cp_size = (150, 350)
         self.cp_pos = (400, self.window.SCREEN_HEIGHT / 2 - self.cp_size[0])
 
@@ -82,7 +84,7 @@ class ScreenInfo:
         # self.print_buttons
         font = pygame.font.SysFont(None, 24)
         
-        # current floor
+        # Drawing of the current floor.
         str_cfloor = 'Current floor %d ' % (7-self.current_floor)
         str_state = ""
         if self.current_state == Elevator.STATE_WATING:
@@ -97,12 +99,12 @@ class ScreenInfo:
                 str_state = "^"
                 self.window.screen.blit(self.img_up, (self.scren_pos[0] + 48, self.scren_pos[1]+8))
         
-        # current floor
+        # Current floor.
         font2 = pygame.font.SysFont(None, 36)
         img = font2.render(str(7-self.current_floor), True, (255,0,0))
         self.window.screen.blit(img, (self.scren_pos[0] + 28, self.scren_pos[1]+5))
 
-        # buttons
+        # Buttons.
         bt_number = 0
         bt_pos = (0, 0)
         for i in range(2):
@@ -125,11 +127,11 @@ class ScreenInfo:
         else:
             self.window.screen.blit(self.img_emergency_button, (bt_pos[0] - (self.i_button_size[0])/2, bt_pos[1] + self.i_button_size[1]/1.25))
         
-        # number of people
+        # Number of people.
         img = font.render('Number of people %d' % self.people_number, True, (0,0,0))
         self.window.screen.blit(img, (400, 20))
 
-        # People weight
+        # People weight.
         img = font.render('Actual weight %d' % self.people_weight, True, (0,0,0))
         self.window.screen.blit(img, (400, 40))
 
@@ -138,5 +140,4 @@ class ScreenInfo:
             if self.selected_buttons[i] == 1:
                 print("%d "%i)
 
-
-    
+# [Go back to main.py, click here](./main.html)
