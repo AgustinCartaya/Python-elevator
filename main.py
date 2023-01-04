@@ -11,7 +11,7 @@ from screen_info import ScreenInfo
 
 nb_calls = 10000
 
-acceleration = 0.01
+acceleration = 1
 
 def GUI_th(window):
     window.draw()
