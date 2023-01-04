@@ -56,12 +56,8 @@ from screen_info import ScreenInfo
 #Maximum number of calls.
 nb_calls = 10000
 
-<<<<<<< HEAD
-acceleration = 1
-=======
 #Time of execution.
-acceleration = 0.00001
->>>>>>> 34cffd66a447c2d8133f56b1ccf395d63e117554
+acceleration = 1
 
 def GUI_th(window):
     window.draw()
@@ -75,11 +71,13 @@ def calls(floors, elevator):
         floor_nb =  random.randint(0,7)
         # If the floor does not have people queuing, new people is created .
         if not floors[floor_nb].has_people():
-            # If new people is created the elevator is called.
-            floors[floor_nb].create_people()
             # Use to wait at the beginning.
             if i == 0:
-                time.sleep(1*acceleration)
+                time.sleep(2*acceleration)
+
+            # If new people is created the elevator is called.
+            floors[floor_nb].create_people()
+ 
             if floors[floor_nb].has_people():
                 floors[floor_nb].call_elevator(elevator)
                 # Wait between calls.
